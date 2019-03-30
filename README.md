@@ -1,2 +1,2 @@
-# ts-node-lib-template
+# {{project}}
 Typescript library template for node

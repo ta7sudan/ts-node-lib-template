@@ -1,0 +1,90 @@
+{
+  "name": "{{project}}",
+  "version": "0.1.0",
+  "description": "{{desc}}",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "typings": "types/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prebuild": "rimraf dist types",{{if hasPock}}
+    "start": "pock",{{/if}}
+    "lint": "tslint -p tsconfig.json && eslint src{{if hasTest}} test{{/if}}",
+    "format": "prettier --config .prettierrc.js --write {{if hasTest}}{src,test}/**/*.{js,ts}{{else}}src/**/*.{js,ts}{{/if}}",
+    "inspect": "jsinspect src"{{if hasTest}},
+    "test": "tsc --outDir test_cache && nyc ava -v",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "report": "nyc report --reporter=html"{{/if}}{{if !hasTravis&&hasTest}},
+    "prepare": "npm test && npm run build"{{/if}}
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/{{author}}/{{project}}.git"
+  },
+  "keywords": [{{each keywords $kwd $idx}}
+    "{{@$kwd}}"{{if $idx != keywords.length - 1}},{{/if}}{{/each}}
+  ],
+  "author": "{{author}}",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/{{author}}/{{project}}/issues"
+  },
+  "files": [
+    "src",
+    "dist",
+    "example",
+    "types"
+  ],
+  "lint-staged": {
+    "linters": {
+      "*.js": [
+        "eslint"
+      ],
+      "*.ts": [
+        "tslint"
+      ]
+    },
+    "ignore": ["**/*.d.ts"]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm run build && git add ."{{if !hasTravis&&hasTest}},
+      "pre-push": "npm test"{{/if}}
+    }
+  },{{if hasTest}}
+  "ava": {
+    "cache": true,
+    "babel": false
+  },
+  "nyc": {
+    "cache": true,
+    "include": [
+      "dist/**/*.js"
+    ]
+  },{{/if}}
+  "homepage": "https://github.com/{{author}}/{{project}}#readme",
+  "devDependencies": { {{if hasTest}}
+    "ava": "^1.4.1",
+    "codecov": "^3.2.0",{{/if}}
+    "conventional-changelog-cli": "^2.0.12",
+    "cz-conventional-changelog": "^2.1.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "husky": "^1.3.1",
+    "jsinspect": "^0.12.7",
+    "lint-staged": "^8.1.5",{{if hasTest}}
+    "nyc": "^13.3.0",{{/if}}{{if hasPock}}
+    "pock": "^0.3.3",{{/if}}
+    "prettier": "^1.16.4",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.14.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.3.4000"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
