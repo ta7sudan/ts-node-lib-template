@@ -83,6 +83,9 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.5.2"
   },
+  "dependencies": {
+    "tslib": "^1.10.0"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
